@@ -57,16 +57,15 @@ app.get("/", function(req,res){
 
 app.post("/" ,function(req,res) {   // defined 2 forms in sigle post
 
-    var item = req.body.newItem;  
+    var newItem = req.body.newItem;  
 
-    if(req.body.list === "Work")  //if req is from work page then save to workitens array
-    {
-        workItems.push(item);
-        res.redirect("/Work");
-    }else {    //if req is from home page then save to items array
-        items.push(item);
-        res.redirect("/");
-    }
+    const item = new Item({  // adding data to DB dynamically from form  & this item is based on upr schema
+        name: newItem
+    })
+
+    item.save();
+
+    res.redirect("/");
    
    
     
