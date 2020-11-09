@@ -30,20 +30,28 @@ app.set('view engine', 'ejs');
 
   const DefaultItems = [item1,item2,item3];  // inserting all value in array
 
-  Item.insertMany(DefaultItems, function(err){  // saveing data in DB using ( insertMany ) function 
-  if(err){
-      console.log(err)
-  }else{
-      console.log("Successfully saved")
-  }
-  });
+  
 
 app.get("/", function(req,res){
 
+    Item.find({},function(err,foundItems){
+
+        if(foundItems.length === 0){
+            Item.insertMany(DefaultItems, function(err){  // saveing data in DB using ( insertMany ) function 
+                if(err){
+                    console.log(err)
+                }else{
+                    console.log("Successfully saved")
+                }
+                });
+                res.redirect("/");
+        }else{
+            res.render("list",{listTitle:"Today" , newItems :foundItems });
+        }
+       
+    }); 
     
-res.render("list",{
-    listTitle:"Today" , newItems :items
-});
+
 
 });
 

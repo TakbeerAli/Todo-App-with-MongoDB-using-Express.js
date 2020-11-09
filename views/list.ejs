@@ -6,12 +6,15 @@
 </div>
 
 <div class="box">
-    <%  for(var i=0 ; i<newItems.length; i++){ %>  <!--printing Todo lists value-->
-    <div class="item">
-        <input type="checkbox">
-        <p> <%= newItems[i]    %></p>
-    </div>
-    <% } %>
+
+  <%  newItems.forEach(function(item){ %>
+        <div class="item">
+            <input type="checkbox">
+            <p> <%=item.name%></p>
+        </div> 
+<% }); %>
+
+   
 
 
 
