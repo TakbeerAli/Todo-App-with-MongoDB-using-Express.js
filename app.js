@@ -65,14 +65,24 @@ app.get("/", function(req,res){
 app.post("/" ,function(req,res) {   // defined 2 forms in sigle post
 
     var newItem = req.body.newItem;  
+    const listName = req.body.list;  // get value for where to store items
 
     const item = new Item({  // adding data to DB dynamically from form  & this item is based on upr schema
         name: newItem
-    })
+    });
 
-    item.save();
+    if(listName ==="Today")  // checking where to store items
+    {
+        item.save();
+        res.redirect("/");
+    }else{
+        List.findOne({name:listName}, function(err,foundList){
+          foundList.items.push(item);
+          foundList.save();
+          res.redirect("/" + listName);
 
-    res.redirect("/");
+        });
+    } 
 });
 
 app.post("/delete", function(req,res){
