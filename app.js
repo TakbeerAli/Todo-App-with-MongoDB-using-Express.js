@@ -30,6 +30,13 @@ app.set('view engine', 'ejs');
 
   const DefaultItems = [item1,item2,item3];  // inserting all value in array
 
+  const listShema = {  // schema for dynamic routing
+      name:String,
+      items:[itemsSchema]
+  };
+
+  const List = mongoose.model("List", listShema); // for dynamic    routing
+
   
 
 app.get("/", function(req,res){
@@ -66,17 +73,41 @@ app.post("/" ,function(req,res) {   // defined 2 forms in sigle post
     item.save();
 
     res.redirect("/");
-   
-   
-    
+});
+
+app.post("/delete", function(req,res){
+const CheckedId = req.body.checkedbox;
+
+Item.findByIdAndRemove(CheckedId,function(err){
+   if(!err){
+    console.log("Succesfully Deleted");
+    res.redirect("/");
+  }
+ });
+});
+
+
+app.get("/:customeListName", function(req,res){
+  const customeListName = req.params.customeListName;
+
+  List.findOne({name:customeListName}, function(err, foundList){  //this for found of link is found then show it other wise don't repeat it
+if(!err){
+    if(!foundList){
+        const list = new List({
+
+            name:customeListName,
+            items: DefaultItems
+          });
+          list.save();
+          res.redirect("/" + customeListName);
+    }else{
+        res.render("list",{listTitle:foundList.name , newItems :foundList.items });
+    }
+}
+
+  });
   
 });
-
-app.get("/work", function(req,res){
-
-    res.render("list",{ listTitle:"Work", newItems:workItems });
-});
-
 
 
 app.listen(process.env.PORT || 3000, function(req,res){    
