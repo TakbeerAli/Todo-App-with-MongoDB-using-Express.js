@@ -6,18 +6,19 @@
 </div>
 
 <div class="box">
-
+    <%  newItems.forEach(function(item){ %>
     <form action="/delete" method="POST">
 
-        <%  newItems.forEach(function(item){ %>
+       
             <div class="item">
                 <input type="checkbox" name="checkedbox" value="<%=item._id%>" onchange="this.form.submit()">
                 <p> <%=item.name%></p>
             </div> 
-    <% }); %>
+            <input type="hidden" name="listName" value="<%= listTitle %>"></input>
+
 
     </form>
-  
+    <% }); %>   
 
    
 

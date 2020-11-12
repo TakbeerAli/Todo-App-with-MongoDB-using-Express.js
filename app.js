@@ -2,6 +2,7 @@ const express = require("express");
 const BodyParser = require("body-parser");
 const ejs = require('ejs');
 const mongoose = require('mongoose');
+const _= require("lodash");
 
 
 const  app = express();
@@ -87,18 +88,31 @@ app.post("/" ,function(req,res) {   // defined 2 forms in sigle post
 
 app.post("/delete", function(req,res){
 const CheckedId = req.body.checkedbox;
+const listName = req.body.listName;
+if(listName ==="Today")
+{
+    Item.findByIdAndRemove(CheckedId,function(err){
+        if(!err){
+         console.log("Succesfully Deleted");
+         res.redirect("/");
+       }
+      });
 
-Item.findByIdAndRemove(CheckedId,function(err){
-   if(!err){
-    console.log("Succesfully Deleted");
-    res.redirect("/");
-  }
- });
+}else{
+    List.findOneAndUpdate({name:listName},{$pull:{items:{_id: CheckedId}}}, function(err, foundList){
+      if(!err){
+          res.redirect("/" + listName);
+      }
+    });
+
+}
+
+
 });
 
 
 app.get("/:customeListName", function(req,res){
-  const customeListName = req.params.customeListName;
+  const customeListName = _.capitalize(req.params.customeListName);
 
   List.findOne({name:customeListName}, function(err, foundList){  //this for found of link is found then show it other wise don't repeat it
 if(!err){
